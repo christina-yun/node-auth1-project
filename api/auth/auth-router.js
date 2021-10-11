@@ -12,24 +12,9 @@ router.post('/register', checkUsernameFree, checkPasswordLength, hashPassword, (
     .catch(next)
 })
 
-/**
-  2 [POST] /api/auth/login { "username": "sue", "password": "1234" }
-
-  response:
-  status 200
-  {
-    "message": "Welcome sue!"
-  }
-
-  response on invalid credentials:
-  status 401
-  {
-    "message": "Invalid credentials"
-  }
- */
 router.post('/login', checkUsernameExists, comparePasswords, (req, res, next) => {
   try{
-    res.status(200).json({ message: `welcome back ${req.body.username}` })
+    res.status(200).json({ message: `welcome ${req.body.username}` })
   }
   catch(err){
     next(err);
@@ -51,6 +36,13 @@ router.post('/login', checkUsernameExists, comparePasswords, (req, res, next) =>
     "message": "no session"
   }
  */
-router.get('/logout', (req, res, next) => {})
+router.get('/logout', (req, res, next) => {
+  if(req.session.user){
+    req.session.destroy();
+    next({status: 200, message: 'logged out'})
+  } else { 
+    next({ status: 200, message: 'no session'});
+  }
+})
  
 module.exports = router;
