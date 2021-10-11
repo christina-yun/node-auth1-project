@@ -27,8 +27,19 @@ const Users = require('./users-model.js');
   }
  */
 router.get('/', (req, res, next) => {
-
+  Users.find()
+    .then(users => {
+      res.status(200).json(users);
+    })
+    .catch(next)
 })
 
-// Don't forget to add the router to the `exports` object so it can be required in other modules
+router.post('/', (req, res, next) => {
+  Users.add(req.body)
+    .then( newUser => {
+      res.status(201).json(newUser);
+    })
+    .catch(next)
+})
+
 module.exports = router;
