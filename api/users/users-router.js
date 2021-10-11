@@ -26,18 +26,10 @@ const Users = require('./users-model.js');
     "message": "You shall not pass!"
   }
  */
-router.get('/', (req, res, next) => {
+router.get('/', restricted, (req, res, next) => {
   Users.find()
     .then(users => {
       res.status(200).json(users);
-    })
-    .catch(next)
-})
-
-router.post('/', (req, res, next) => {
-  Users.add(req.body)
-    .then( newUser => {
-      res.status(201).json(newUser);
     })
     .catch(next)
 })
