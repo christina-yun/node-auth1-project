@@ -1,5 +1,5 @@
 const express = require('express');
-const { checkUsernameFree, checkUsernameExists, checkPasswordLength, hashPassword } = require('./auth-middleware.js');
+const { checkUsernameFree, checkUsernameExists, checkPasswordLength, hashPassword, comparePasswords } = require('./auth-middleware.js');
 const Users = require('./../users/users-model.js')
 
 const router = express.Router();
@@ -27,7 +27,14 @@ router.post('/register', checkUsernameFree, checkPasswordLength, hashPassword, (
     "message": "Invalid credentials"
   }
  */
-router.post('/login', checkUsernameExists, (req, res, next) => {})
+router.post('/login', checkUsernameExists, comparePasswords, (req, res, next) => {
+  try{
+    res.status(200).json({ message: `welcome back ${req.body.username}` })
+  }
+  catch(err){
+    next(err);
+  }
+})
 
 /**
   3 [GET] /api/auth/logout

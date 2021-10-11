@@ -24,7 +24,7 @@ const server = express();
 
 server.use(helmet());
 server.use(session({
-  name: 'kittens',
+  name: 'chocolatechip',
   secret: 'all the kitters sleep soundly',
   cookie: {
     maxAge: 1000 * 60 * 2,

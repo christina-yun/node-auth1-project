@@ -47,14 +47,6 @@ async function checkUsernameExists(req, res, next) {
   }
 }
 
-/*
-  If password is missing from req.body, or if it's 3 chars or shorter
-
-  status 422
-  {
-    "message": "Password must be longer than 3 chars"
-  }
-*/
 function checkPasswordLength(req, res, next) {
   const validPassword = req.body.password;
 
@@ -71,10 +63,23 @@ function hashPassword(req, res, next){
   next();
 }
 
+async function comparePasswords(req, res, next){
+  const { username, password } = req.body;
+  const user = await Users.findBy({ username: username }).first();
+
+  if(user && bcrypt.compareSync(password, user.password)){
+    req.session.user = user;
+    next();
+  } else {
+    next({ status: 401, message: 'Invalid credentials'})
+  }
+}
+
 module.exports = {
   restricted,
   checkUsernameFree,
   checkUsernameExists,
   checkPasswordLength,
-  hashPassword
+  hashPassword,
+  comparePasswords
 }
