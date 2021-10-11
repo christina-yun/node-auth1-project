@@ -1,30 +1,16 @@
 const express = require('express');
+const { checkUsernameFree, checkUsernameExists, checkPasswordLength, hashPassword } = require('./auth-middleware.js');
+const Users = require('./../users/users-model.js')
+
 const router = express.Router();
-const { checkUsernameFree, checkUsernameExists, checkPasswordLength } = require('./auth-middleware.js');
 
-/**
-  1 [POST] /api/auth/register { "username": "sue", "password": "1234" }
-
-  response:
-  status 200
-  {
-    "user_id": 2,
-    "username": "sue"
-  }
-
-  response on username taken:
-  status 422
-  {
-    "message": "Username taken"
-  }
-
-  response on password three chars or less:
-  status 422
-  {
-    "message": "Password must be longer than 3 chars"
-  }
- */
-router.post('/register', checkUsernameFree, checkPasswordLength, (req, res, next) =>{})
+router.post('/register', checkUsernameFree, checkPasswordLength, hashPassword, (req, res, next) => {
+  Users.add(req.user)
+    .then(newUser => {
+      res.status(201).json(newUser);
+    })
+    .catch(next)
+})
 
 /**
   2 [POST] /api/auth/login { "username": "sue", "password": "1234" }

@@ -26,7 +26,7 @@ const Users = require('./users-model.js');
     "message": "You shall not pass!"
   }
  */
-router.get('/', restricted, (req, res, next) => {
+router.get('/', (req, res, next) => {
   Users.find()
     .then(users => {
       res.status(200).json(users);
